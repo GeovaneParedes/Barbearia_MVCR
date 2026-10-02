@@ -1,3 +1,18 @@
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Development.json.example
+
+# Build do .NET
+**/bin/
+**/obj/
+
+# Visual Studio e VS Code
+.vs/
+.vscode/
+
+# Arquivos temporários
+*.user
+*.suo
+*.userosscache
+*.ncrunch*
+*.log

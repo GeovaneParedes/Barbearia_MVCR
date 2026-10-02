@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">📅 Schedule New Appointment</h4>
+        </div>
+        <div class="card-body">
+            
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Seleção do Cliente -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Customer</label>
+                    <select name="customerId" class="form-select" required>
+                        <option value="" disabled selected>-- Select a Customer --</option>
+                        <!-- Em produção, isso virá dinamicamente do banco -->
+                        <option value="2">Michael Jordan</option>
+                        <option value="3">LeBron James</option>
+                    </select>
+                </div>
+
+                <!-- Seleção do Barbeiro -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Barber</label>
+                    <select name="barberId" class="form-select" required>
+                        <option value="" disabled selected>-- Select a Barber --</option>
+                        <option value="1">John Doe (40%)</option>
+                        <option value="2">Alex Smith (50%)</option>
+                    </select>
+                </div>
+
+                <!-- Seleção do Serviço -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Service</label>
+                    <select name="serviceId" class="form-select" required>
+                        <option value="" disabled selected>-- Select a Service --</option>
+                        <option value="1">Haircut ($30.00)</option>
+                        <option value="2">Beard Trim ($20.00)</option>
+                        <option value="3">Combo ($45.00)</option>
+                    </select>
+                </div>
+
+                <!-- Data e Hora -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Appointment Date & Time</label>
+                    <!-- datetime-local abre o calendário e o relógio nativos do navegador -->
+                    <input type="datetime-local" name="dateTime" class="form-control" required />
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Back to Schedule</a>
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
