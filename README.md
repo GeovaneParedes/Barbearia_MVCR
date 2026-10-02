@@ -146,4 +146,4 @@ builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
 ## Licença
 
-Projeto desenvolvido para fins educacionais e treinamento em arquitetura MVC com .NET.
+Projeto desenvolvido para fins educacionais e treinamento em arquitetura MVC com .NET.# Barbearia_MVCR
