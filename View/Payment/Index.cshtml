@@ -1,0 +1,69 @@
+@model IEnumerable<Barbearia_MVC.Models.Payment>
+
+@{
+    ViewData["Title"] = "Financial History";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>💵 Cashier & Financial History</h2>
+        <span class="badge bg-dark fs-6">EUA Standard Currency ($)</span>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <table class="table table-striped table-hover border shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Date/Time</th>
+                <th>Service Done</th>
+                <th>Barber</th>
+                <th>Amount Paid</th>
+                <th>Barber Commission</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-4">No payment transactions recorded yet.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var payment in Model)
+                {
+                    <tr>
+                        <td>@payment.PaymentDate.ToString("MM/dd/yyyy hh:mm tt")</td>
+                        <!-- Acessa o relacionamento através do agendamento -->
+                        <td class="fw-bold">@payment.Appointment.Service.Name</td>
+                        <td>@payment.Appointment.Barber.Name</td>
+                        <td class="text-success fw-bold">$@payment.AmountPaid.ToString("F2")</td>
+                        <!-- Mostra o valor exato calculado da comissão do funcionário -->
+                        <td class="text-primary fw-bold">$@payment.BarberCommissionPaid.ToString("F2")</td>
+                        <td><span class="badge bg-light text-dark border">@payment.PaymentMethod</span></td>
+                        <td>
+                            <span class="badge @(payment.Status == "Paid" ? "bg-success" : "bg-danger")">@payment.Status</span>
+                        </td>
+                        <td>
+                            @if (payment.Status == "Paid")
+                            {
+                                <!-- Botão de estorno de segurança -->
+                                <form asp-action="Refund" asp-route-id="@payment.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Refund</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

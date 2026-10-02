@@ -1,0 +1,42 @@
+@model IEnumerable<Barbearia_MVC.Models.Customer>
+
+@{
+    ViewData["Title"] = "Customers Management";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>👥 Customers List</h2>
+        <a asp-action="Create" class="btn btn-primary">Register New Customer</a>
+    </div>
+
+    <table class="table table-striped table-hover border">
+        <thead class="table-dark">
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>SSN (Document)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@customer.Name</td>
+                    <td>@customer.Email</td>
+                    <td>@customer.Phone</td>
+                    <td>@customer.Address</td>
+                    <!-- Formato mascarado para proteger o SSN na listagem: XXX-XX-1234 -->
+                    <td>***-**-@(customer.Ssn.Length > 4 ? customer.Ssn.Substring(customer.Ssn.Length - 4) : customer.Ssn)</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

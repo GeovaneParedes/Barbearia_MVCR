@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Add New Barber";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">💈 New Barber Profile</h4>
+        </div>
+        <div class="card-body">
+            
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="e.g., Charles Razor" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" required placeholder="(555) 000-0000" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Commission Rate (0.00 to 1.00)</label>
+                    <!-- Permite decimais como 0.40 para representar 40% -->
+                    <input type="number" name="commissionRate" step="0.01" min="0" max="1" class="form-control" required placeholder="0.40" />
+                    <div class="form-text">Example: 0.40 means 40% of the service price goes to the barber.</div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-success">Save Barber</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

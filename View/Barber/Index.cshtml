@@ -1,0 +1,54 @@
+@model IEnumerable<Barbearia_MVC.Models.Barber>
+
+@{
+    ViewData["Title"] = "Barbers Directory";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>💈 Our Team (Barbers)</h2>
+        <a asp-action="Create" class="btn btn-primary">Add New Barber</a>
+    </div>
+
+    <table class="table table-striped table-hover border">
+        <thead class="table-dark">
+            <tr>
+                <th>Barber Name</th>
+                <th>Phone Number</th>
+                <th>Commission Rate</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var barber in Model)
+            {
+                <tr>
+                    <td class="fw-bold">@barber.Name</td>
+                    <td>@barber.Phone</td>
+                    <!-- Multiplica por 100 para exibir ex: 40% em vez de 0.40 -->
+                    <td class="text-primary fw-bold">@((barber.CommissionRate * 100).ToString("F0"))%</td>
+                    <td>
+                        @if (barber.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">Edit Commission</button>
+                        @if (barber.IsActive)
+                        {
+                            <form asp-action="Deactivate" asp-route-id="@barber.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,107 @@
+@model IEnumerable<Barbearia_MVC.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Daily Schedule";
+}
+
+<div class="container mt-4">
+    <!-- Bloco de Alerta caso ocorra algum erro na rota Express -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row align-items-center mb-4 border-bottom pb-3">
+        <div class="col-md-6">
+            <h2>📅 Appointments & Schedule</h2>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <!-- Botão do agendamento clássico -->
+            <a asp-action="Create" class="btn btn-outline-primary me-2">Book Appointment</a>
+            
+            <!-- SEU BOTÃO DE OURO: Abre uma janela (Modal) para fazer a venda rápida de rua com 2 cliques -->
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#walkInModal">⚡ Fast Walk-In Service</button>
+        </div>
+    </div>
+
+    <!-- Lista de agendamentos tradicionais -->
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center text-muted my-5">
+                <h4>No appointments scheduled for today.</h4>
+            </div>
+        }
+        else
+        {
+            @foreach (var app in Model)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm border-start border-4 @(app.Status == "Completed" ? "border-success" : app.Status == "Cancelled" ? "border-danger" : "border-primary")">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@app.Customer.Name</h5>
+                            <p class="card-text mb-1"><strong>Service:</strong> @app.Service.Name ($@app.Service.Price)</p>
+                            <p class="card-text mb-1"><strong>Barber:</strong> @app.Barber.Name</p>
+                            <p class="card-text mb-2"><strong>Time:</strong> @app.DateTime.ToString("hh:mm tt")</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="badge @(app.Status == "Completed" ? "bg-success" : app.Status == "Cancelled" ? "bg-danger" : "bg-primary")">@app.Status</span>
+                                
+                                @if (app.Status == "Scheduled")
+                                {
+                                    <div>
+                                        <form asp-action="Cancel" asp-route-id="@app.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-link text-danger p-0">Cancel</button>
+                                        </form>
+                                        <!-- Redireciona o agendamento concluído direto para o caixa (PaymentController) -->
+                                        <a href="/Payment/Checkout?appointmentId=@app.Id" class="btn btn-sm btn-success ms-2">Checkout</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- POPUP (MODAL) PARA O ATENDIMENTO RÁPIDO DE RUA -->
+<div class="modal fade" id="walkInModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">⚡ Express Walk-In Checkout</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="CreateExpress" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <p class="text-muted">Register a fast service for a client directly from the street. No profile registration required.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Who is the Barber?</label>
+                        <select name="barberId" class="form-select" required>
+                            <!-- Esses itens em produção viriam de um loop trazendo os barbeiros ativos -->
+                            <option value="1">John Doe (40%)</option>
+                            <option value="2">Alex Smith (50%)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Select the Service Provided</label>
+                        <select name="serviceId" class="form-select" required>
+                            <!-- Esses itens viriam dinamicamente do banco de dados de Serviços -->
+                            <option value="1">Haircut ($30.00)</option>
+                            <option value="2">Beard Trim ($20.00)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Confirm & Process Sale</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
